@@ -32,6 +32,16 @@ const formReducer = (state, action) => {
           errors: validate.single(action.value, constraints[action.name]),
         },
       };
+    case "validate":
+      const newState = { ...state };
+      for (const key in newState) {
+        if (newState.hasOwnProperty(key)) {
+          const field = newState[key];
+          console.log(newState[key]);
+          field.errors = validate.single(field.value, constraints[key]);
+        }
+      }
+      return newState;
     default:
       return {
         ...state,
@@ -43,11 +53,23 @@ const validateForm = ({ form }) => {
   for (const key in form) {
     if (form.hasOwnProperty(key)) {
       const field = form[key];
-      console.log(form[key])
+      console.log(form[key]);
       field.errors = validate.single(field.value, constraints[key]);
     }
   }
 };
+
+const calculateTotalErrors = ({form}) => {
+  let acum = 0;
+  for (const key in form) {
+    if  (form.hasOwnProperty(key)) {
+      const field = form[key];
+      acum += field.errors ? field.errors.length : 0;
+    }
+  }
+
+  return acum;
+}
 
 const parseErrors = (errors) => {
   if (errors && errors.length > 0) {
@@ -69,14 +91,18 @@ const Login = (props) => {
     },
   });
 
-  console.log(form);
   const classes = useStyles();
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    validateForm({form});
-    console.log(form)
-    console.log("ESTO PASA PRIMERO");
+    dispatchForm({ type: "validate" });
+    console.log(calculateTotalErrors({form}));
+    if (calculateTotalErrors({form}) === 0) {
+      console.log('EXITO')
+    }
+    else {
+      console.log('HUBO UN ERROR')
+    }
   };
   return (
     <form onSubmit={handleOnSubmit}>
