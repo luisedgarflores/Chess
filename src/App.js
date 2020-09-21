@@ -1,14 +1,15 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Login from './Components/Login/Login'
+import { Switch, Route } from "react-router-dom";
+import Login from "./Components/Login/Login";
+import SignUp from "./Components/SignUp/SignUp";
+import Home from "./Components/Home/Home"
 
 const Contact = (props) => {
   console.log(props);
   const handleClick = () => {
-    props.history.replace('/')
-  }
+    props.history.replace("/");
+  };
   return (
     <div>
       <button onClick={handleClick}>Ir a INICIO</button>
@@ -20,8 +21,8 @@ const Contact = (props) => {
 const About = (props) => {
   console.log(props);
   const handleClick = () => {
-    props.history.replace('/')
-  }
+    props.history.replace("/");
+  };
   return (
     <div>
       <button onClick={handleClick}>Ir a INICIO</button>
@@ -35,15 +36,6 @@ const AllContacts = (props) => {
   return (
     <div>
       <p>TODOS LOS CONTACTOS</p>
-    </div>
-  );
-};
-
-const Home = (props) => {
-  console.log(props);
-  return (
-    <div>
-      <p>INICIO</p>
     </div>
   );
 };
@@ -72,6 +64,8 @@ function App() {
             Important: A route with path="/" will *always* match
             the URL because all URLs begin with a /. So that's
             why we put this one last of all */}
+        <Route path="/home" component={Home} />
+        <Route path="/signup" component={SignUp} />
         <Route path="/" component={Login} />
       </Switch>
     </div>
