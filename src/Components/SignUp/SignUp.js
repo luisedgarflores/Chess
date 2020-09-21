@@ -3,7 +3,7 @@ import { Container, Grid, Typography } from "@material-ui/core";
 //RootComponents
 import BasicInput from "../RootComponents/BasicInput";
 import BasicButton from "../RootComponents/BasicButton";
-import { userLogin, password } from "../Validations/validations";
+import { userSignUp, passwordSignUp, email } from "../Validations/validations";
 import { makeStyles } from "@material-ui/core/styles";
 
 var validate = require("validate.js");
@@ -18,8 +18,9 @@ const useStyles = makeStyles({
 });
 
 const constraints = {
-  user: userLogin,
-  password,
+  user: userSignUp,
+  password: passwordSignUp,
+  email,
 };
 
 const formReducer = (state, action) => {
@@ -69,11 +70,15 @@ const parseErrors = (errors) => {
   }
 };
 
-const Login = (props) => {
+const SignUp = (props) => {
   const [form, dispatchForm] = useReducer(formReducer, {
     user: {
       value: "",
       errors: null,
+    },
+    email: {
+      value: "",
+      errors: null
     },
     password: {
       value: "",
@@ -81,9 +86,9 @@ const Login = (props) => {
     },
   });
 
-  const handleSignUp = () => {
-    props.history.push("/signup");
-  };
+  const handleLogin = () => {
+    props.history.push('/login')
+  }
 
   const classes = useStyles();
 
@@ -93,7 +98,7 @@ const Login = (props) => {
     console.log(calculateTotalErrors({ form }));
     if (calculateTotalErrors({ form }) === 0) {
       console.log("EXITO");
-      props.history.push("/home");
+      props.history.push('/login')
     } else {
       console.log("HUBO UN ERROR");
     }
@@ -109,14 +114,21 @@ const Login = (props) => {
         >
           <Grid container item xs={4} spacing={4}>
             <Grid item xs={12}>
-              <Typography variant="h4">Iniciar sesión</Typography>
+              <Typography variant="h4">Registro</Typography>
             </Grid>
             <BasicInput
               value={form.user.value}
               dispatchValue={dispatchForm}
               errorText={parseErrors(form.user.errors)}
-              label="Usuario o Mail"
+              label="Usuario"
               name="user"
+            />
+            <BasicInput
+              value={form.email.value}
+              dispatchValue={dispatchForm}
+              errorText={parseErrors(form.email.errors)}
+              label="Mail"
+              name="email"
             />
             <BasicInput
               value={form.password.value}
@@ -127,14 +139,10 @@ const Login = (props) => {
               type="password"
             />
             <BasicButton type="submit" fullWidth={true}>
-              Iniciar sesión
-            </BasicButton>
-            <BasicButton
-              type="button"
-              handleClick={handleSignUp}
-              fullWidth={true}
-            >
               Registrarme
+            </BasicButton>
+            <BasicButton type="button" handleClick={handleLogin} fullWidth={true}>
+              Iniciar sesión
             </BasicButton>
           </Grid>
         </Grid>
@@ -143,4 +151,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default SignUp;
