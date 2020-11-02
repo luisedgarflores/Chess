@@ -17,6 +17,7 @@ const useStyles = makeStyles({
 const Home = (props) => {
   const classes = useStyles();
   const handleLogout = () => {
+    localStorage.removeItem('token')
     props.history.push("/login");
   };
 

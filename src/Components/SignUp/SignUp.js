@@ -6,6 +6,8 @@ import BasicButton from "../RootComponents/BasicButton";
 import { userSignUp, passwordSignUp, email } from "../Validations/validations";
 import { makeStyles } from "@material-ui/core/styles";
 
+
+
 var validate = require("validate.js");
 
 const useStyles = makeStyles({
