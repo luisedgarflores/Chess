@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import { Container, Grid, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
-//utils
-import BasicButton from "../RootComponents/BasicButton";
+
+
+import NavBar from "../Navigation/NavBar";
+import LeftDrawer from "../Navigation/LeftDrawer";
 
 const useStyles = makeStyles({
   root: {
@@ -16,12 +18,34 @@ const useStyles = makeStyles({
 
 const Home = (props) => {
   const classes = useStyles();
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    props.history.push("/login");
+
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setShowDrawer(open);
   };
 
+
   return (
+    <>
+    <NavBar
+        showDrawer={showDrawer}
+        setShowDrawer={setShowDrawer}
+        title="Inicio"
+        history={props.history}
+      />
+      <LeftDrawer
+        showDrawer={showDrawer}
+        toggleDrawer={toggleDrawer}
+        history={props.history}
+      />
     <Container fixed className={classes.root}>
       <Grid
         container
@@ -32,9 +56,9 @@ const Home = (props) => {
         <Grid item xs={12}>
           <Typography align='center' variant="h1">HOME</Typography>
         </Grid>
-        <BasicButton fullWidth={true} handleClick={handleLogout}>Logout</BasicButton>
       </Grid>
     </Container>
+    </>
   );
 };
 
