@@ -15,6 +15,7 @@ const columns = [
   {
     title: "ID",
     field: "id",
+    hidden: true
   },
   {
     title: "Nombre",

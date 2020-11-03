@@ -90,14 +90,14 @@ const Login = (props) => {
   });
 
   const handleSignUp = () => {
-    props.history.push("/signup");
+    props.history.replace("/signup");
   };
 
   const classes = useStyles();
 
   const handleSuccessfulLogin  = ({token}) => {
     localStorage.setItem('token', token)
-    props.history.push('/home')
+    props.history.replace('/home')
   }
 
   const requestLogin = () => {

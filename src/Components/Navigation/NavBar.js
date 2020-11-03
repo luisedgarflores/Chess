@@ -42,7 +42,7 @@ const NavBar = ({showDrawer, setShowDrawer, history, title}) => {
 
   const handleLogOut  = () => {
     localStorage.removeItem('token')
-    history.push('/')
+    history.replace('/')
   }
 
   return (

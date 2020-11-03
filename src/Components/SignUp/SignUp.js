@@ -88,7 +88,7 @@ const SignUp = (props) => {
   });
 
   const handleLogin = () => {
-    props.history.push('/login')
+    props.history.replace('/login')
   }
 
   const classes = useStyles();
@@ -97,7 +97,7 @@ const SignUp = (props) => {
     event.preventDefault();
     dispatchForm({ type: "validate" });
     if (calculateTotalErrors({ form }) === 0) {
-      props.history.push('/login')
+      props.history.replace('/login')
     }
   };
   return (

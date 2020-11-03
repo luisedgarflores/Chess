@@ -55,10 +55,8 @@ const LeftDrawer = ({ showDrawer, toggleDrawer, history }) => {
     Inicio: <HomeIcon />,
   };
 
-  console.log("rendering")
-
   const handleRoute = (link) => {
-    history.push(link)
+    history.replace(link)
   };
 
   const classes = useStyles();
