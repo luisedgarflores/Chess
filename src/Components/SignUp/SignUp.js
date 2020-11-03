@@ -6,6 +6,8 @@ import BasicButton from "../RootComponents/BasicButton";
 import { userSignUp, passwordSignUp, email } from "../Validations/validations";
 import { makeStyles } from "@material-ui/core/styles";
 
+
+
 var validate = require("validate.js");
 
 const useStyles = makeStyles({
@@ -38,7 +40,6 @@ const formReducer = (state, action) => {
       for (const key in newState) {
         if (newState.hasOwnProperty(key)) {
           const field = newState[key];
-          console.log(newState[key]);
           field.errors = validate.single(field.value, constraints[key]);
         }
       }
@@ -87,7 +88,7 @@ const SignUp = (props) => {
   });
 
   const handleLogin = () => {
-    props.history.push('/login')
+    props.history.replace('/login')
   }
 
   const classes = useStyles();
@@ -95,12 +96,8 @@ const SignUp = (props) => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
     dispatchForm({ type: "validate" });
-    console.log(calculateTotalErrors({ form }));
     if (calculateTotalErrors({ form }) === 0) {
-      console.log("EXITO");
-      props.history.push('/login')
-    } else {
-      console.log("HUBO UN ERROR");
+      props.history.replace('/login')
     }
   };
   return (

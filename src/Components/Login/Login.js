@@ -6,6 +6,7 @@ import BasicButton from "../RootComponents/BasicButton";
 import { userLogin, password } from "../Validations/validations";
 import { makeStyles } from "@material-ui/core/styles";
 
+const axios = require("axios");
 var validate = require("validate.js");
 
 const useStyles = makeStyles({
@@ -37,11 +38,18 @@ const formReducer = (state, action) => {
       for (const key in newState) {
         if (newState.hasOwnProperty(key)) {
           const field = newState[key];
-          console.log(newState[key]);
           field.errors = validate.single(field.value, constraints[key]);
         }
       }
       return newState;
+    case "setNoValidCredentials": 
+      return {
+        ...state,
+        password: {
+          ...state.password,
+          errors: ["Usuario o contraseña no válidos"]
+        }
+      }
     default:
       return {
         ...state,
@@ -82,20 +90,39 @@ const Login = (props) => {
   });
 
   const handleSignUp = () => {
-    props.history.push("/signup");
+    props.history.replace("/signup");
   };
 
   const classes = useStyles();
 
+  const handleSuccessfulLogin  = ({token}) => {
+    localStorage.setItem('token', token)
+    props.history.replace('/home')
+  }
+
+  const requestLogin = () => {
+    axios({
+      method: 'post',
+      url: 'http://192.81.219.106:8000/api-token-auth/',
+      data: {
+        username: form.user.value,
+        password: form.password.value
+      }
+    }).then((response)=> {
+      handleSuccessfulLogin({token: response.data.token})
+    })
+    .catch((err) => {
+      dispatchForm({
+        type: 'setNoValidCredentials'
+      })
+    })
+  }
+
   const handleOnSubmit = (event) => {
     event.preventDefault();
     dispatchForm({ type: "validate" });
-    console.log(calculateTotalErrors({ form }));
     if (calculateTotalErrors({ form }) === 0) {
-      console.log("EXITO");
-      props.history.push("/home");
-    } else {
-      console.log("HUBO UN ERROR");
+      requestLogin()
     }
   };
   return (
