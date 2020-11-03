@@ -40,7 +40,6 @@ const formReducer = (state, action) => {
       for (const key in newState) {
         if (newState.hasOwnProperty(key)) {
           const field = newState[key];
-          console.log(newState[key]);
           field.errors = validate.single(field.value, constraints[key]);
         }
       }
@@ -97,12 +96,8 @@ const SignUp = (props) => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
     dispatchForm({ type: "validate" });
-    console.log(calculateTotalErrors({ form }));
     if (calculateTotalErrors({ form }) === 0) {
-      console.log("EXITO");
       props.history.push('/login')
-    } else {
-      console.log("HUBO UN ERROR");
     }
   };
   return (

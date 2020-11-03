@@ -9,8 +9,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
-import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 import HomeIcon from "@material-ui/icons/Home";
+import HourglassFullIcon from '@material-ui/icons/HourglassFull';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -51,9 +51,11 @@ const links = [
 const LeftDrawer = ({ showDrawer, toggleDrawer, history }) => {
   const icons = {
     Jugadores: <PeopleIcon />,
-    Partidas: <HourglassEmptyIcon />,
+    Partidas: <HourglassFullIcon />,
     Inicio: <HomeIcon />,
   };
+
+  console.log("rendering")
 
   const handleRoute = (link) => {
     history.push(link)

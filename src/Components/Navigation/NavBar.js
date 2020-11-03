@@ -36,7 +36,6 @@ const NavBar = ({showDrawer, setShowDrawer, history, title}) => {
 
   const classes = useStyles()
   const handleDrawer = () => {
-    console.log(showDrawer);
     setShowDrawer(!showDrawer);
   }; 
 

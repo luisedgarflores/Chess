@@ -17,19 +17,27 @@ const columns = [
     field: "id",
   },
   {
-    title: "Nombre",
-    field: "name",
+    title: "Jugador 1",
+    field: "player_w",
   },
   {
-    title: "elo",
-    field: "elo"
-  }
+    title: "Jugador 2",
+    field: "player_b",
+  },
+  {
+    title: "Ganador",
+    field: "winner",
+  },
+  {
+    title: "Fecha",
+    field: "date",
+  },
 ];
 
-const ShowPlayers = ({ history }) => {
+const ShowMatches = ({ history }) => {
   const [tableData, setTableData] = useState([]);
-  const [loading, setLoading] = useState(true)
   const [showDrawer, setShowDrawer] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -42,15 +50,43 @@ const ShowPlayers = ({ history }) => {
     setShowDrawer(open);
   };
 
+  const setUpTableData = (matchesData, playersData) => {
+    const playersMatch = {}
+
+    for (let index = 0; index < playersData.length; index++) {
+      const player = playersData[index];
+      playersMatch[player.id] = {
+        ...player,
+      }
+    }
+
+    const newData = matchesData.map((match) => {
+      return {
+        ...match,
+        player_w: playersMatch[match.player_w].name,
+        player_b: playersMatch[match.player_b].name,
+        winner: playersMatch[match.winner].name,
+      };
+    });
+
+    setTableData(newData);
+    setLoading(false)
+  };
+
   const requestTableData = () => {
     axios({
       method: "get",
       headers: { Authorization: "Token " + localStorage.getItem("token") },
-      url: "http://192.81.219.106:8000/api/players",
+      url: "http://192.81.219.106:8000/api/matches",
     })
-      .then((response) => {
-        setTableData(response.data);
-        setLoading(false)
+      .then((matchesData) => {
+        axios({
+          method: "get",
+          headers: { Authorization: "Token " + localStorage.getItem("token") },
+          url: "http://192.81.219.106:8000/api/players",
+        })
+          .then((playersData) => setUpTableData(matchesData.data, playersData.data))
+          .catch((err) => console.log(err));
       })
       .catch((err) => {
         console.log(err);
@@ -71,19 +107,19 @@ const ShowPlayers = ({ history }) => {
       <NavBar
         showDrawer={showDrawer}
         setShowDrawer={setShowDrawer}
-        title="Jugadores"
+        title="Partidas"
         history={history}
       />
       <LeftDrawer
         showDrawer={showDrawer}
         toggleDrawer={toggleDrawer}
         history={history}
-      /> 
+      />
       <Container>
         <MaterialTable
-          title="Jugadores"
-          data={tableData}
+          title="Partidas"
           isLoading={loading}
+          data={tableData}
           columns={columns}
           options={{
             search: true,
@@ -97,4 +133,4 @@ const ShowPlayers = ({ history }) => {
   );
 };
 
-export default ShowPlayers;
+export default ShowMatches;
