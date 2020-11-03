@@ -72,7 +72,7 @@ const ShowPlayers = ({ history }) => {
         showDrawer={showDrawer}
         toggleDrawer={toggleDrawer}
         history={history}
-      />
+      /> 
       <Container>
         <MaterialTable
           title="Jugadores"
