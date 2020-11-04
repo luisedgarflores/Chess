@@ -21,7 +21,7 @@ describe("shallow", () => {
     shallowWrapper = shallow(<BasicButton />);
   });
   it("able to find a Button", () => {
-    expect(shallowWrapper.find(Button).length).toBe(2);
+    expect(shallowWrapper.find(Button).length).toBe(1);
   });
   it ("able to find Grids", ()=> {
     expect(shallowWrapper.find(Grid).length).toBe(1);
