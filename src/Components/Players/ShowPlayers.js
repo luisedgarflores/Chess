@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { createFragmentContainer, graphql } from "react-relay"
 // Material table
 import MaterialTable from "material-table";
 
@@ -47,7 +48,8 @@ const ShowPlayers = ({ history }) => {
     axios({
       method: "get",
       headers: { Authorization: "Token " + localStorage.getItem("token") },
-      url: "http://192.81.219.106:8000/api/players",
+      // url: "http://192.81.219.106:8000/api/players",
+      url: "http://192.81.219.106/graphql/",
     })
       .then((response) => {
         setTableData(response.data);

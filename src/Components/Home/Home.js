@@ -1,11 +1,14 @@
-import React, {useState} from "react";
-import { Container, Grid, Typography } from "@material-ui/core";
+import React, { useState } from "react";
+import { Container, Grid, Typography, Button, TextField } from "@material-ui/core";
+// import { createFragmentContainer, graphql, QueryRenderer } from "react-relay"
 
 import { makeStyles } from "@material-ui/core/styles";
 
-
 import NavBar from "../Navigation/NavBar";
 import LeftDrawer from "../Navigation/LeftDrawer";
+import PlayerPrediction from "../Players/PlayerPrediction";
+import ImgHolder from '../RootComponents/ImgHolder';
+
 
 const useStyles = makeStyles({
   root: {
@@ -35,7 +38,7 @@ const Home = (props) => {
 
   return (
     <>
-    <NavBar
+      <NavBar
         showDrawer={showDrawer}
         setShowDrawer={setShowDrawer}
         title="Inicio"
@@ -46,18 +49,45 @@ const Home = (props) => {
         toggleDrawer={toggleDrawer}
         history={props.history}
       />
-    <Container fixed className={classes.root}>
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        className={classes.container}
-      >
-        <Grid item xs={12}>
-          <Typography align='center' variant="h1">HOME</Typography>
+
+      <Container fixed className={classes.root}>
+
+        <Grid
+          container
+          justify="center"
+          // alignItems="center"
+          className={classes.container}
+        >
+          <Grid item xs={12} align='center'>
+            <Typography align='center' variant="h3">Chess Masters</Typography>
+          </Grid>
+
+          <Grid item xs={3}>
+            {<ImgHolder />}
+          </Grid>
+
+          <Grid item xs={2}>
+            {PlayerPrediction(1)}
+          </Grid>
+
+          <Grid item xs={2} align='center'>
+          <TextField id="standard-basic" label="Turns"/>
+            <Typography></Typography>
+            <Button variant="contained" color="primary" style={{top: "40px"}}>Predict</Button>
+          </Grid>
+
+          <Grid item xs={2} align='center'>
+            {PlayerPrediction(2)}
+          </Grid>
+
+          <Grid item xs={3}>
+            <ImgHolder />
+          </Grid>
+
         </Grid>
-      </Grid>
-    </Container>
+
+      </Container>
+
     </>
   );
 };

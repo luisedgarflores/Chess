@@ -57,9 +57,11 @@ const NavBar = ({showDrawer, setShowDrawer, history, title}) => {
         >
           <MenuIcon />
         </IconButton>
+        
         <Typography variant="h6" className={classes.title}>
           {title}
         </Typography>
+        
         <Button onClick={handleLogOut} color="inherit">Logout</Button>
       </Toolbar>
     </AppBar>
