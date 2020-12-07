@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { createFragmentContainer, graphql } from "react-relay"
+import React, { useState } from "react";
+import { useQuery, gql } from '@apollo/client';
+
+// import { createFragmentContainer, graphql } from "react-relay"
 // Material table
 import MaterialTable from "material-table";
 
@@ -10,8 +12,6 @@ import { Container } from "@material-ui/core";
 import NavBar from "../Navigation/NavBar";
 import LeftDrawer from "../Navigation/LeftDrawer";
 
-const axios = require("axios");
-
 const columns = [
   {
     title: "ID",
@@ -20,17 +20,15 @@ const columns = [
   },
   {
     title: "Nombre",
-    field: "name",
+    field: "username",
   },
   {
-    title: "elo",
+    title: "ELO",
     field: "elo"
   }
 ];
 
 const ShowPlayers = ({ history }) => {
-  const [tableData, setTableData] = useState([]);
-  const [loading, setLoading] = useState(true)
   const [showDrawer, setShowDrawer] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
@@ -40,34 +38,28 @@ const ShowPlayers = ({ history }) => {
     ) {
       return;
     }
-
     setShowDrawer(open);
   };
 
-  const requestTableData = () => {
-    axios({
-      method: "get",
-      headers: { Authorization: "Token " + localStorage.getItem("token") },
-      // url: "http://192.81.219.106:8000/api/players",
-      url: "http://192.81.219.106/graphql/",
-    })
-      .then((response) => {
-        setTableData(response.data);
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const firstRender = useRef(true);
-
-  useEffect(() => {
-    if (firstRender.current) {
-      requestTableData();
-      firstRender.current = false;
+  const PLAYERS_QUERY = gql`
+  query allPlayers {
+    allPlayers{
+      edges {
+        node {
+          id
+          username
+          elo
+        }
+      }
     }
-  });
+  }
+`;
+
+  const {data, loading} = useQuery(PLAYERS_QUERY)
+  let tableData = []
+  if (data){
+    tableData = data.allPlayers.edges.map(element => {return {id: element.node.id, username: element.node.username, elo: element.node.elo}})
+  }
 
   return (
     <>

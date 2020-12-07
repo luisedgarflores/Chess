@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
+import { useQuery, gql } from '@apollo/client';
+
 // Material table
 import MaterialTable from "material-table";
 
@@ -9,8 +11,6 @@ import { Container } from "@material-ui/core";
 import NavBar from "../Navigation/NavBar";
 import LeftDrawer from "../Navigation/LeftDrawer";
 
-const axios = require("axios");
-
 const columns = [
   {
     title: "ID",
@@ -18,27 +18,41 @@ const columns = [
     hidden: true
   },
   {
-    title: "Jugador 1",
-    field: "player_w",
+    title: "Blancas",
+    field: "playerW",
   },
   {
-    title: "Jugador 2",
-    field: "player_b",
+    title: "Negras",
+    field: "playerB",
   },
   {
     title: "Ganador",
     field: "winner",
   },
-  {
-    title: "Fecha",
-    field: "date",
-  },
 ];
 
+const MATCHES_QUERY = gql`
+query allMatches{
+  allMatches{
+    edges{
+      node{
+        playerW{username},
+        playerB{username},
+        winner
+      }
+    }
+  }
+}
+`;
+
 const ShowMatches = ({ history }) => {
-  const [tableData, setTableData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [loading, setLoading] = useState(true)
+  const {data, loading} = useQuery(MATCHES_QUERY)
+  let tableData = []
+  if (data){
+    console.log(data)
+    tableData = data.allMatches.edges.map(element => {return {winner: element.node.winner==="white" ? "Blancas" : "Negras", playerW: element.node.playerW?.username, playerB: element.node.playerB?.username}})
+  }
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -51,57 +65,26 @@ const ShowMatches = ({ history }) => {
     setShowDrawer(open);
   };
 
-  const setUpTableData = (matchesData, playersData) => {
-    const playersMatch = {}
+  // const requestTableData = () => {
+  //   axios({
+  //     method: "get",
+  //     headers: { Authorization: "Token " + localStorage.getItem("token") },
+  //     url: "http://192.81.219.106:8000/api/matches",
+  //   })
+  //     .then((matchesData) => {
+  //       axios({
+  //         method: "get",
+  //         headers: { Authorization: "Token " + localStorage.getItem("token") },
+  //         url: "http://192.81.219.106:8000/api/players",
+  //       })
+  //         .then((playersData) => setUpTableData(matchesData.data, playersData.data))
+  //         .catch((err) => console.log(err));
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
-    for (let index = 0; index < playersData.length; index++) {
-      const player = playersData[index];
-      playersMatch[player.id] = {
-        ...player,
-      }
-    }
-
-    const newData = matchesData.map((match) => {
-      return {
-        ...match,
-        player_w: playersMatch[match.player_w].name,
-        player_b: playersMatch[match.player_b].name,
-        winner: playersMatch[match.winner].name,
-      };
-    });
-
-    setTableData(newData);
-    setLoading(false)
-  };
-
-  const requestTableData = () => {
-    axios({
-      method: "get",
-      headers: { Authorization: "Token " + localStorage.getItem("token") },
-      url: "http://192.81.219.106:8000/api/matches",
-    })
-      .then((matchesData) => {
-        axios({
-          method: "get",
-          headers: { Authorization: "Token " + localStorage.getItem("token") },
-          url: "http://192.81.219.106:8000/api/players",
-        })
-          .then((playersData) => setUpTableData(matchesData.data, playersData.data))
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const firstRender = useRef(true);
-
-  useEffect(() => {
-    if (firstRender.current) {
-      requestTableData();
-      firstRender.current = false;
-    }
-  });
 
   return (
     <>

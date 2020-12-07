@@ -1,12 +1,22 @@
 import React, { useReducer } from "react";
 import { Container, Grid, Typography } from "@material-ui/core";
+
+import { useMutation, gql } from '@apollo/client';
+
 //RootComponents
 import BasicInput from "../RootComponents/BasicInput";
 import BasicButton from "../RootComponents/BasicButton";
 import { userLogin, password } from "../Validations/validations";
 import { makeStyles } from "@material-ui/core/styles";
 
-const axios = require("axios");
+const AUTH_QUERY = gql`
+  mutation auth($user: ObtainJSONWebTokenInput!) {
+    tokenAuth(input: $user) {
+      token
+    }
+  }
+`;
+
 var validate = require("validate.js");
 
 const useStyles = makeStyles({
@@ -42,7 +52,7 @@ const formReducer = (state, action) => {
         }
       }
       return newState;
-    case "setNoValidCredentials": 
+    case "setNoValidCredentials":
       return {
         ...state,
         password: {
@@ -95,28 +105,30 @@ const Login = (props) => {
 
   const classes = useStyles();
 
-  const handleSuccessfulLogin  = ({token}) => {
+  const handleSuccessfulLogin = ({ token }) => {
     localStorage.setItem('token', token)
     props.history.replace('/home')
-  }
+  };
+
+  const [loginMutation] = useMutation(AUTH_QUERY, {
+    onCompleted (data) {
+      console.log(data)
+      handleSuccessfulLogin({token: data.tokenAuth.token})
+    },
+    onError (error) {
+      console.log(JSON.stringify("error", null, 2))
+      dispatchForm({type: "setNoValidCredentials"})
+    },
+  })
 
   const requestLogin = () => {
-    axios({
-      method: 'post',
-      url: 'http://192.81.219.106:8000/api-token-auth/',
-      data: {
+    loginMutation({variables: {
+      user: {
         username: form.user.value,
         password: form.password.value
       }
-    }).then((response)=> {
-      handleSuccessfulLogin({token: response.data.token})
-    })
-    .catch((err) => {
-      dispatchForm({
-        type: 'setNoValidCredentials'
-      })
-    })
-  }
+    }})
+  };
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
@@ -125,6 +137,7 @@ const Login = (props) => {
       requestLogin()
     }
   };
+
   return (
     <form onSubmit={handleOnSubmit}>
       <Container fixed className={classes.root}>

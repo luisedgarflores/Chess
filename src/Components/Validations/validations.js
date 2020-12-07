@@ -43,3 +43,17 @@ export const passwordSignUp = {
     tooLong: "^* La contraseña no puede ser de más de 20 caracteres"
   }
 };
+
+export const player = {
+  presence: {
+    allowEmpty: false,
+    message: "^* Jugador es requerido",
+  }, 
+};
+
+export const turns = {
+  presence: {
+    allowEmpty: false,
+    message: "^* Los turnos son requeridos",
+  }, 
+};
